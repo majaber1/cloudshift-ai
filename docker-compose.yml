@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_APP_NAME=CloudShift AI
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://cloudshift:cloudshift123@postgres:5432/cloudshiftdb
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:7b-instruct}
+      - CHROMADB_HOST=chromadb
+      - CHROMADB_PORT=8001
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@demo.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-demo123}
+    depends_on:
+      - postgres
+      - chromadb
+      - ollama
+    volumes:
+      - uploads_data:/app/uploads
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=cloudshiftdb
+      - POSTGRES_USER=cloudshift
+      - POSTGRES_PASSWORD=cloudshift123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudshift -d cloudshiftdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chromadb_data:/chroma/chroma
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  chromadb_data:
+  ollama_data:
+  uploads_data:

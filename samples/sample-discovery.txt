@@ -1,0 +1,126 @@
+CLOUD MIGRATION DISCOVERY REPORT
+Organization: Ministry of Digital Transformation
+Assessment Date: January 2025
+Prepared By: IT Infrastructure Team
+
+=== EXECUTIVE OVERVIEW ===
+The Ministry currently operates a hybrid on-premises infrastructure across 3 data centers
+in Riyadh, Jeddah, and Dammam. Total IT assets include 420 physical servers, 1,200 VMs,
+and 850TB of structured data. Monthly IT operational costs are approximately SAR 2.1M.
+
+=== COMPUTE ENVIRONMENT ===
+Physical Servers: 420 (avg age: 4.2 years)
+Virtual Machines: 1,200 (VMware vSphere 7.0)
+Operating Systems: Windows Server 2019 (45%), RHEL 8 (30%), Ubuntu 20.04 (25%)
+Workload Types:
+- Web applications: 35%
+- Databases: 25%
+- File servers: 20%
+- Development/Test: 15%
+- Legacy systems (COBOL): 5%
+
+CPU Utilization Average: 42%
+RAM Utilization Average: 67%
+Peak load periods: Month-end processing, budget cycles
+
+=== STORAGE ===
+Total Capacity: 850TB
+Used: 620TB (73%)
+SAN Storage: NetApp FAS9000 (primary), HP 3PAR (secondary)
+Backup: Veeam Backup (daily, 30-day retention)
+Archive: Physical tape (quarterly)
+Object Storage: None currently
+
+Data Classification:
+- Sensitive Government Data: 40%
+- Internal Use: 35%
+- Public: 25%
+
+=== NETWORK ===
+WAN Connectivity: MPLS 1Gbps between sites
+Internet Bandwidth: 2Gbps (Riyadh), 500Mbps (Jeddah/Dammam)
+Firewall: Palo Alto PA-5220 (primary), FortiGate (secondary)
+Load Balancers: F5 BIG-IP (4x)
+DNS: Windows DNS (internal), Cloudflare (external)
+VPN: Cisco AnyConnect for remote access (2,000 concurrent users)
+CDN: Not implemented
+
+=== SECURITY ===
+IAM: Active Directory (on-prem), no SSO federation
+MFA: Implemented for VPN only (50% of users)
+Antivirus: Symantec Endpoint Protection
+SIEM: IBM QRadar (partial deployment)
+Vulnerability Scanning: Qualys (monthly)
+Last Penetration Test: 6 months ago
+WAF: Not implemented
+Zero Trust: Not started
+Data Encryption at Rest: Only for financial databases (40% coverage)
+TLS Version: Mix of TLS 1.1 and TLS 1.2 (TLS 1.3 not deployed)
+
+=== IDENTITY ===
+Directory: Microsoft Active Directory (50,000 users)
+Privileged Access: No PAM solution, shared admin accounts used
+Service Accounts: 340 service accounts, 60% have excessive privileges
+MFA Coverage: 50% (VPN only)
+SSO: Not implemented
+Role-Based Access: Partially implemented (60%)
+
+=== BACKUP & DR ===
+Backup Solution: Veeam (VMs), legacy scripts (databases)
+Backup Testing: Quarterly (not all systems)
+RTO: 4 hours (stated), 8+ hours (actual based on last test)
+RPO: 24 hours (nightly backup)
+DR Site: Dammam data center (manual failover)
+DR Testing: Annual, last test failed for 3 critical applications
+DR Documentation: Incomplete
+
+=== MONITORING ===
+Monitoring Tool: Nagios (basic), Grafana dashboards (limited)
+Log Management: Splunk (partial - 40% of systems)
+APM: None
+Alerting: Email-based, no PagerDuty or similar
+On-call Process: Manual escalation, no runbooks
+
+=== COMPLIANCE REQUIREMENTS ===
+Required Frameworks:
+- NCA ECC (Essential Cybersecurity Controls) - Partially compliant
+- Saudi PDPL (Personal Data Protection Law) - Gap assessment not done
+- ISO 27001 - Certification expired 18 months ago
+- SAMA Framework - Under review (financial system interfaces)
+
+Data Residency: All government data must remain in Saudi Arabia
+Third-party Audits: Last audit 14 months ago
+Cloud Classification: Currently at Secret level for some data - national cloud required
+
+=== APPLICATIONS INVENTORY ===
+Total Applications: 187
+Mission Critical: 23
+Business Critical: 67
+Standard: 97
+
+Modernization Readiness:
+- Cloud-native ready: 12%
+- Lift-and-shift candidates: 58%
+- Refactor required: 22%
+- Retire/decommission: 8%
+
+Legacy Applications (requiring special handling):
+- HR System (Oracle 11g, 12 years old)
+- Finance System (COBOL-based, 20 years old)
+- Document Management (SharePoint 2013)
+
+=== COST ANALYSIS ===
+Current Annual IT Spend: SAR 25.2M
+Hardware refresh cycle: Every 5 years (overdue)
+Software licensing: SAR 8.1M/year
+Staffing (IT): 47 FTEs
+Cloud cost estimate (lift-and-shift): SAR 18-22M/year (projected 15-20% savings)
+
+=== KEY CHALLENGES ===
+1. Legacy COBOL applications - no modernization path defined
+2. Data residency requirements limit cloud provider options
+3. Network bandwidth insufficient for large data migration
+4. Limited cloud skills in current team (5 cloud-certified staff)
+5. No cloud governance or FinOps process
+6. Security gaps must be addressed before migration
+7. DR capabilities need improvement before cloud dependency
